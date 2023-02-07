@@ -28,7 +28,7 @@ private val retrofit = Retrofit.Builder().addConverterFactory(MoshiConverterFact
 
 interface MarsApiService {
     @GET("realestate")
-    fun getProperties() : Call<String>
+    fun getProperties() : Call<List<String>>
 }
 
 object MarsApi {
