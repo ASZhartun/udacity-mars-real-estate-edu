@@ -22,6 +22,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.marsrealestate.network.MarsApi
+import com.example.android.marsrealestate.network.MarsApiFilter
 import com.example.android.marsrealestate.network.MarsProperty
 import retrofit2.Call
 import retrofit2.Callback
@@ -63,18 +64,22 @@ class OverviewViewModel : ViewModel() {
         _navigateToSelectedProperty.value = null
     }
 
+    fun updateFilter(filter: MarsApiFilter) {
+        getMarsRealEstateProperties(filter)
+    }
+
     /**
      * Call getMarsRealEstateProperties() on init so we can display status immediately.
      */
     init {
-        getMarsRealEstateProperties()
+        getMarsRealEstateProperties(MarsApiFilter.SHOW_ALL)
     }
 
     /**
      * Sets the value of the status LiveData to the Mars API status.
      */
-    private fun getMarsRealEstateProperties() {
-        MarsApi.retrofitService.getProperties().enqueue(object : Callback<List<MarsProperty>> {
+    private fun getMarsRealEstateProperties(filter: MarsApiFilter) {
+        var getPropertiesDeferred = MarsApi.retrofitService.getProperties(filter.value).enqueue(object : Callback<List<MarsProperty>> {
             override fun onFailure(call: Call<List<MarsProperty>>, t: Throwable) {
                 _response.value = "Failure: " + t.message
                 _status.value = "Failure: ${t.message}"
